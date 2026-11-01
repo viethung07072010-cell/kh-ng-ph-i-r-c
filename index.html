@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Gửi tặng Minh • Một Lần Nữa, Chúng Ta Có Thể Bắt Đầu Lại Không?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-cream: #FFFDF9;
+      --bg-pastel: #FCEEF2;
+      --bg-soft-pink: #F9E2E8;
+      --rose-primary: #D96B7B;
+      --rose-hover: #C45666;
+      --rose-light: #F3C6CE;
+      --text-main: #3D2C2E;
+      --text-muted: #7A6266;
+      --card-bg: rgba(255, 253, 249, 0.88);
+      --border-soft: rgba(217, 107, 123, 0.22);
+      --shadow-soft: 0 18px 45px rgba(180, 95, 110, 0.12);
+      --transition-slow: 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      color: var(--text-main);
+      background: linear-gradient(145deg, var(--bg-cream) 0%, var(--bg-pastel) 55%, var(--bg-soft-pink) 100%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      line-height: 1.75;
+    }
+
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Màn hình chạm mở thư đầu tiên */
+    #welcome-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: radial-gradient(circle at center, #FFFDF9 0%, #FCEEF2 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      transition: opacity 0.85s ease, visibility 0.85s ease;
+    }
+
+    #welcome-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .envelope-card {
+      max-width: 440px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border-soft);
+      border-radius: 28px;
+      padding: 42px 30px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(12px);
+      animation: floatSlow 4s ease-in-out infinite;
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .envelope-icon {
+      width: 68px;
+      height: 68px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: var(--bg-pastel);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--rose-primary);
+      box-shadow: 0 8px 20px rgba(217, 107, 123, 0.18);
+    }
+
+    /* Khung bố cục chính */
+    main.app-container {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 18px 60px;
+    }
+
+    .page-section {
+      display: none;
+      width: 100%;
+      max-width: 680px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-soft);
+      border-radius: 28px;
+      padding: 44px 38px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+      position: relative;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    .page-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h1, h2 {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--text-main);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .section-title {
+      font-size: clamp(1.85rem, 4.5vw, 2.5rem);
+      text-align: center;
+      margin-bottom: 24px;
+      color: #352225;
+    }
+
+    .subtitle-badge {
+      display: inline-block;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--rose-primary);
+      background: var(--bg-pastel);
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .center-header {
+      text-align: center;
+      margin-bottom: 26px;
+    }
+
+    /* Phần 1: Typewriter Letter */
+    .letter-box {
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(217, 107, 123, 0.16);
+      border-radius: 20px;
+      padding: 28px 26px;
+      min-height: 290px;
+      font-size: 15.5px;
+      color: var(--text-main);
+      position: relative;
+      box-shadow: inset 0 2px 12px rgba(217, 107, 123, 0.05);
+    }
+
+    .letter-paragraph {
+      margin-bottom: 16px;
+      text-align: justify;
+    }
+
+    .letter-paragraph:last-child {
+      margin-bottom: 0;
+    }
+
+    .type-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background-color: var(--rose-primary);
+      vertical-align: text-bottom;
+      margin-left: 3px;
+      animation: blinkCursor 0.8s infinite;
+    }
+
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Phần 2: Hình ảnh lãng mạn & lời ngỏ */
+    .romantic-illustration {
+      width: 100%;
+      height: 190px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #FCEEF2 0%, #F7D6DF 50%, #FBEAE7 100%);
+      margin-bottom: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(217, 107, 123, 0.2);
+    }
+
+    .heart-pulse-svg {
+      width: 64px;
+      height: 64px;
+      color: var(--rose-primary);
+      animation: gentleBeat 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 6px 16px rgba(217, 107, 123, 0.3));
+    }
+
+    @keyframes gentleBeat {
+      0%, 100% { transform: scale(1); }
+      35% { transform: scale(1.1); }
+      70% { transform: scale(0.97); }
+    }
+
+    .sincere-list {
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 20px;
+      padding: 26px;
+      border: 1px solid rgba(217, 107, 123, 0.16);
+      margin-bottom: 20px;
+      font-size: 15.5px;
+    }
+
+    .sincere-list p {
+      margin-bottom: 14px;
+    }
+
+    .sincere-list p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Hệ thống nút bấm */
+    .btn-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 26px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--rose-primary);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(217, 107, 123, 0.28);
+    }
+
+    .btn-primary:hover {
+      background: var(--rose-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(217, 107, 123, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--text-main);
+      border: 1.5px solid rgba(122, 98, 102, 0.32);
+    }
+
+    .btn-secondary:hover {
+      background: #fff;
+      border-color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .btn-text-skip {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 6px 12px;
+    }
+
+    /* Khu vực chứa nút Đồng ý và Không */
+    .choice-arena {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    .choice-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      width: 100%;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .choice-buttons .btn {
+      min-width: 180px;
+      padding: 16px 26px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* Phần 3A: Biểu mẫu tương tác */
+    .intro-note-box {
+      background: var(--bg-pastel);
+      border-left: 4px solid var(--rose-primary);
+      padding: 18px 20px;
+      border-radius: 14px;
+      font-size: 15px;
+      color: var(--text-main);
+      margin-bottom: 28px;
+    }
+
+    .form-section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--rose-hover);
+      margin: 28px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-soft);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 7px;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      width: 100%;
+      font-family: 'Be Vietnam Pro', sans-serif;
+      font-size: 14.5px;
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(217, 107, 123, 0.28);
+      border-radius: 14px;
+      padding: 13px 16px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      resize: vertical;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--rose-primary);
+      box-shadow: 0 0 0 3px rgba(217, 107, 123, 0.15);
+      background: #fff;
+    }
+
+    textarea.form-control {
+      min-height: 92px;
+    }
+
+    .date-time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* Phần 3B: Giao diện từ chối nhẹ nhàng */
+    .flower-wrapper {
+      width: 110px;
+      height: 110px;
+      margin: 8px auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      border: 1px solid var(--border-soft);
+      animation: swayFlower 5s ease-in-out infinite;
+    }
+
+    @keyframes swayFlower {
+      0%, 100% { transform: rotate(-4deg) translateY(0); }
+      50% { transform: rotate(4deg) translateY(-5px); }
+    }
+
+    .closing-wish {
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-soft);
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      color: var(--rose-hover);
+    }
+
+    /* Modal xác nhận & Hộp thư Admin */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(45, 30, 32, 0.45);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-soft);
+      border-radius: 24px;
+      max-width: 580px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 30px 26px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+    }
+
+    .summary-preview {
+      background: #fff;
+      border: 1px solid var(--border-soft);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .summary-preview p {
+      margin-bottom: 8px;
+    }
+
+    .owner-footer {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+    }
+
+    .owner-btn {
+      background: rgba(255, 253, 249, 0.65);
+      border: 1px solid rgba(217, 107, 123, 0.16);
+      color: var(--text-muted);
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      transition: all 0.2s;
+      opacity: 0.6;
+    }
+
+    .owner-btn:hover {
+      opacity: 1;
+      background: #fff;
+      color: var(--rose-primary);
+    }
+
+    .status-banner {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .status-banner.error {
+      display: block;
+      background: #FFF0F2;
+      color: #B93848;
+      border: 1px solid #F5C2C8;
+    }
+
+    /* Thẻ hiển thị trạng thái Từ chối / Đồng ý trong Hộp thư */
+    .decision-status-box {
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1.5px solid var(--border-soft);
+      background: #fff;
+    }
+
+    .decision-status-box.status-declined {
+      background: #FFF5F6;
+      border-color: #E295A1;
+    }
+
+    .decision-status-box.status-agreed {
+      background: #F4FBF7;
+      border-color: #8FD1A8;
+    }
+
+    .decision-status-box.status-pending {
+      background: #FFFDF7;
+      border-color: #E6D5B8;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(217, 107, 123, 0.18);
+      border-radius: 12px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .stat-item .stat-num {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .stat-item .stat-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .reply-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .reply-badge.badge-decline {
+      background: #FFE4E8;
+      color: #B93848;
+    }
+
+    .reply-badge.badge-agree {
+      background: #E3F7EB;
+      color: #1F7A44;
+    }
+
+    .reply-badge.badge-agree-click {
+      background: #FCEEF2;
+      color: #C45666;
+    }
+
+    @media (max-width: 600px) {
+      .page-section {
+        padding: 30px 20px;
+        border-radius: 22px;
+      }
+      .date-time-grid {
+        grid-template-columns: 1fr;
+      }
+      .choice-buttons .btn {
+        min-width: 145px;
+        padding: 14px 20px;
+        font-size: 15px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Canvas hạt sáng & cánh hoa rơi nhẹ nhàng -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <!-- Âm thanh chạy ngầm hoàn toàn tự động -->
+  <audio id="audio-initial" loop preload="auto" style="display:none;">
+    <source src="./monkeys-spinning.m4a" type="audio/mp4" />
+  </audio>
+
+  <audio id="audio-agree" loop preload="auto" style="display:none;">
+    <source src="./cho-chut.m4a" type="audio/mp4" />
+  </audio>
+
+  <!-- Màn hình mở phong bì tinh tế -->
+  <div id="welcome-overlay">
+    <div class="envelope-card">
+      <div class="envelope-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c-1.1 0-2 .9-2 2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+      </div>
+      <span class="subtitle-badge">Gửi tặng Minh ❤️</span>
+      <h1 style="font-size: 2rem; margin-bottom: 12px;">Một Lần Nữa, Chúng Ta Có Thể Bắt Đầu Lại Không?</h1>
+      <p style="color: var(--text-muted); font-size: 14.5px; margin-bottom: 26px;">
+        Trang web nhỏ này lưu giữ những lời chân thành nhất từ đáy lòng mà tui muốn gửi đến bạn.
+      </p>
+      <button class="btn btn-primary" id="btn-open-letter" style="width: 100%;">
+        Mở bức thư ❤️
+      </button>
+    </div>
+  </div>
+
+  <main class="app-container">
+    <!-- =====================================================
+         PHẦN 1: TRANG LỜI XIN LỖI
+         ===================================================== -->
+    <section id="section-1" class="page-section active visible">
+      <div class="center-header">
+        <span class="subtitle-badge">Gửi tặng Minh • Phần 1</span>
+        <h1 class="section-title">Tui có một vài điều muốn nói...</h1>
+      </div>
+
+      <div class="letter-box" id="typewriter-container">
+        <div id="typewriter-text"></div>
+      </div>
+
+      <div style="text-align: right; margin-top: 10px;">
+        <button type="button" class="btn-text-skip" id="btn-skip-typewriter">Hiện toàn bộ bức thư ngay</button>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="btn-to-part2">
+          <span>Đọc tiếp...</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         PHẦN 2: LỜI NGỎ MUỐN QUAY LẠI (TÔN TRỌNG LỰA CHỌN)
+         ===================================================== -->
+    <section id="section-2" class="page-section">
+      <div class="center-header">
+        <span class="subtitle-badge">Gửi tặng Minh • Phần 2</span>
+        <h2 class="section-title">Liệu bạn và tui có thể cho nhau một cơ hội nữa không?</h2>
+      </div>
+
+      <div class="romantic-illustration">
+        <svg class="heart-pulse-svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <p style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--rose-hover); margin-top: 10px; font-style: italic;">
+          "Gửi tặng Minh — Trân trọng quá khứ, sửa chữa hiện tại và cùng nhau bước tiếp"
+        </p>
+      </div>
+
+      <div class="sincere-list">
+        <p>
+          Đi qua những ngày xa nhau, tui vẫn luôn trân trọng từng kỷ niệm đẹp đẽ mà bạn và tui đã cùng nhau trải qua. Những khoảnh khắc ấy đối với tui chưa bao giờ phai nhạt.
+        </p>
+        <p>
+          Tui hiểu rất rõ rằng chỉ nói một lời xin lỗi thôi là chưa bao giờ đủ để xóa đi những tổn thương. Điều bạn cần là sự thay đổi thực sự, và tui muốn chứng minh điều đó bằng chính hành động thực tế của tui mỗi ngày chứ không chỉ bằng lời hứa.
+        </p>
+        <p>
+          Tui thật lòng mong bạn và tui có thể một lần ngồi xuống, bình tĩnh trò chuyện, lắng nghe những suy nghĩ chưa từng nói hết để thấu hiểu nhau sâu sắc hơn.
+        </p>
+        <p>
+          Tui không đòi hỏi mọi thứ phải lập tức trở lại như cũ ngay ngày một ngày hai. Tui chỉ mong nếu cả hai vẫn còn trân trọng nhau và cùng muốn cố gắng, bạn và tui hãy cùng nhau xây dựng một mối quan hệ mới trưởng thành, lành mạnh và tốt đẹp hơn trước.
+        </p>
+      </div>
+
+      <div class="choice-arena" id="choice-arena">
+        <div class="choice-buttons">
+          <button type="button" class="btn btn-primary" id="btn-agree">
+            ĐỒNG Ý ❤️
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-decline">
+            KHÔNG
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         PHẦN 3A: NẾU CHỌN ĐỒNG Ý
+         ===================================================== -->
+    <section id="section-3a" class="page-section">
+      <div class="center-header">
+        <span class="subtitle-badge">Gửi tặng Minh • Khởi Đầu Mới</span>
+        <h2 class="section-title">Cảm ơn bạn vì đã cho chúng ta một cơ hội!</h2>
+      </div>
+
+      <div class="intro-note-box">
+        "Tui biết rằng một cơ hội nữa không có nghĩa là mọi chuyện sẽ lập tức tốt đẹp. Tui muốn bạn và tui cùng nhìn nhận những điều chưa tốt và cố gắng thay đổi."
+      </div>
+
+      <div id="form-error-banner" class="status-banner error"></div>
+
+      <form id="reconnect-form" novalidate>
+        <div class="form-section-title">
+          <span>1. Những điều cần thay đổi</span>
+        </div>
+
+        <div class="form-group">
+          <label for="f-change">• Những điều bạn muốn tui thay đổi *</label>
+          <textarea id="f-change" class="form-control" placeholder="Bạn cứ viết thật thẳng thắn những thói quen, cách cư xử hay tính cách mà tui cần sửa đổi nhé..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="f-desire">• Những điều bạn mong muốn trong mối quan hệ *</label>
+          <textarea id="f-desire" class="form-control" placeholder="Sự quan tâm, cách chia sẻ, sự tôn trọng hay bất kỳ điều gì giúp bạn cảm thấy an toàn và hạnh phúc..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="f-issues">• Những vấn đề mà bạn và tui cần giải quyết</label>
+          <textarea id="f-issues" class="form-control" placeholder="Những khúc mắc trong quá khứ hoặc bất đồng mà cả hai cần thẳng thắn tháo gỡ cùng nhau..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="f-never-repeat">• Những điều bạn không muốn lặp lại</label>
+          <textarea id="f-never-repeat" class="form-control" placeholder="Những ranh giới hoặc tổn thương mà bạn tuyệt đối không muốn xuất hiện thêm bất kỳ lần nào nữa..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="f-other-wishes">• Những mong muốn khác của bạn</label>
+          <textarea id="f-other-wishes" class="form-control" placeholder="Bất kỳ tâm sự, suy nghĩ hay điều nhỏ nhặt nào khác bạn muốn nhắn nhủ với tui..."></textarea>
+        </div>
+
+        <div class="form-section-title">
+          <span>2. Chọn ngày gặp nhau</span>
+        </div>
+
+        <div class="date-time-grid">
+          <div class="form-group">
+            <label for="f-date">• Ngày bạn muốn gặp mặt *</label>
+            <input type="date" id="f-date" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="f-time">• Khung giờ phù hợp *</label>
+            <input type="time" id="f-time" class="form-control" value="19:00" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="f-location">• Ghi chú địa điểm hoặc mong muốn về buổi gặp mặt *</label>
+          <textarea id="f-location" class="form-control" style="min-height: 76px;" placeholder="Ví dụ: Quán cà phê yên tĩnh quen thuộc, đi dạo công viên, hoặc tui qua đón bạn..." required></textarea>
+        </div>
+
+        <div class="btn-row" style="margin-top: 32px;">
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 16px; font-weight: 600;">
+            Gửi câu trả lời ❤️
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- =====================================================
+         PHẦN 3A-SUCCESS: MÀN HÌNH SAU KHI GỬI THÀNH CÔNG
+         ===================================================== -->
+    <section id="section-success" class="page-section">
+      <div class="center-header">
+        <div class="flower-wrapper">
+          <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#D96B7B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <span class="subtitle-badge">Gửi tặng Minh ❤️</span>
+        <h2 class="section-title" style="font-size: 2rem;">
+          Tui đã nhận được câu trả lời. Cảm ơn bạn vì đã dành thời gian.
+        </h2>
+        <p style="color: var(--text-muted); font-size: 15.5px; max-width: 500px; margin: 0 auto;">
+          Từng lời bạn viết đều đã được gửi đến tui một cách trân trọng nhất. Tui sẽ đọc thật kỹ, ghi nhớ và chuẩn bị thật tốt cho buổi gặp mặt của bạn và tui.
+        </p>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         PHẦN 3B: NẾU CHỌN TỪ CHỐI
+         ===================================================== -->
+    <section id="section-3b" class="page-section">
+      <div class="center-header">
+        <div class="flower-wrapper" title="Bông hoa bình an">
+          <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="32" r="7" fill="#E899A6"/>
+            <path d="M32 10C36 10 39 17 32 25C25 17 28 10 32 10Z" fill="#F6D5DC" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M32 54C36 54 39 47 32 39C25 47 28 54 32 54Z" fill="#F6D5DC" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M10 32C10 28 17 25 25 32C17 39 10 36 10 32Z" fill="#F6D5DC" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M54 32C54 28 47 25 39 32C47 39 54 36 54 32Z" fill="#F6D5DC" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M16.5 16.5C19.5 13.5 25.5 17.5 27 27C17.5 25.5 13.5 19.5 16.5 16.5Z" fill="#FCEEF2" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M47.5 47.5C44.5 50.5 38.5 46.5 37 37C46.5 38.5 50.5 44.5 47.5 47.5Z" fill="#FCEEF2" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M47.5 16.5C50.5 19.5 46.5 25.5 37 27C38.5 17.5 44.5 13.5 47.5 16.5Z" fill="#FCEEF2" stroke="#D96B7B" stroke-width="1.5"/>
+            <path d="M16.5 47.5C13.5 44.5 17.5 38.5 27 37C25.5 46.5 19.5 50.5 16.5 47.5Z" fill="#FCEEF2" stroke="#D96B7B" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="subtitle-badge">Gửi tặng Minh</span>
+        <h2 class="section-title">Cảm ơn bạn vì đã đọc đến đây.</h2>
+      </div>
+
+      <div class="sincere-list" style="background: rgba(255, 253, 249, 0.85);">
+        <p>
+          Cảm ơn bạn rất nhiều vì đã kiên nhẫn dành thời gian quý báu của mình để đọc hết những lời tâm sự mà tui muốn nói.
+        </p>
+        <p>
+          Tui thành thật xin lỗi nếu sự xuất hiện của trang web này hay những lời nhắn của tui có vô tình làm phiền đến cuộc sống và sự bình yên của bạn.
+        </p>
+        <p>
+          Tui hoàn toàn tôn trọng quyết định của bạn. Tui không có bất kỳ sự trách móc nào, và cũng không muốn tạo thêm bất cứ áp lực nào cho bạn cả.
+        </p>
+        <p>
+          Từ tận đáy lòng, tui chúc bạn những ngày tháng sau này luôn vui vẻ, bình an, được yêu thương đúng cách và luôn gặp được những điều tốt đẹp nhất trong cuộc sống.
+        </p>
+      </div>
+
+      <div class="closing-wish">
+        "Mong rằng bạn sẽ luôn hạnh phúc, dù con đường phía trước có thế nào."
+      </div>
+    </section>
+  </main>
+
+  <!-- Hộp thoại xác nhận trước khi gửi -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="modal-card">
+      <h2 style="font-size: 1.65rem; margin-bottom: 8px;">Xác nhận gửi câu trả lời</h2>
+      <p style="font-size: 14px; color: var(--text-muted);">
+        Bạn hãy kiểm tra lại các thông tin một lần nữa trước khi gửi cho tui nhé:
+      </p>
+      <div class="summary-preview" id="confirm-summary-content"></div>
+      <div class="btn-row" style="margin-top: 18px;">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-send">Chỉnh sửa lại</button>
+        <button type="button" class="btn btn-primary" id="btn-confirm-send">Xác nhận gửi ❤️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nút mở hộp thư dành riêng cho chủ nhân -->
+  <div class="owner-footer">
+    <button type="button" class="owner-btn" id="btn-open-admin">
+      Hộp thư của tui
+    </button>
+  </div>
+
+  <!-- Modal Hộp thư của tui (Ẩn hoàn toàn gợi ý mật khẩu trên giao diện) -->
+  <div class="modal-backdrop" id="admin-modal">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h2 style="font-size: 1.5rem;">Hộp thư riêng tư</h2>
+        <button type="button" class="btn-text-skip" id="btn-close-admin">Đóng ✕</button>
+      </div>
+
+      <div id="admin-login-view">
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 12px;">
+          Khu vực này chỉ dành riêng cho chủ nhân bức thư. Vui lòng nhập mật khẩu bảo mật để mở:
+        </p>
+        <div id="admin-error-msg" class="status-banner error" style="margin-bottom: 12px;">
+          Mật khẩu không chính xác. Chỉ chủ nhân mới có thể mở hộp thư này!
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <input type="password" id="admin-pin-input" class="form-control" placeholder="Nhập mật khẩu bảo mật..." autocomplete="off" />
+          <button type="button" class="btn btn-primary" id="btn-verify-pin">Mở</button>
+        </div>
+      </div>
+
+      <div id="admin-dashboard-view" style="display: none;">
+        <!-- Bảng Trạng Thái Quyết Định: Cho biết rõ cô ấy có từ chối hay không -->
+        <div id="decision-summary-card" class="decision-status-box status-pending">
+          <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 600; margin-bottom: 4px;">
+            📌 Trạng thái quyết định của Minh (Có từ chối hay không?)
+          </div>
+          <div id="decision-latest-headline" style="font-size: 1.08rem; font-weight: 700; color: var(--text-main);">
+            ⏳ Đang kiểm tra trạng thái...
+          </div>
+          <div id="decision-latest-sub" style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+            Hệ thống đang tải lịch sử lựa chọn của Minh.
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-num" id="stat-total-count">0</div>
+              <div class="stat-label">Tổng phản hồi</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" id="stat-agree-count" style="color: #1F7A44;">0</div>
+              <div class="stat-label">Lần chọn ĐỒNG Ý</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" id="stat-decline-count" style="color: #B93848;">0</div>
+              <div class="stat-label">Lần chọn TỪ CHỐI</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #fff; border: 1px solid var(--border-soft); border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+          <h3 style="font-size: 14.5px; color: var(--rose-hover); margin-bottom: 8px;">
+            ☁️ Kết nối Backend nhận dữ liệu từ xa (Firebase / Supabase)
+          </h3>
+          <input type="url" id="cloud-endpoint-input" class="form-control" placeholder="https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app/replies.json" style="margin-bottom: 10px; font-size: 13px;" />
+          <button type="button" class="btn btn-secondary" id="btn-save-endpoint" style="padding: 8px 16px; font-size: 12.5px;">
+            Lưu cấu hình & Tải lại hộp thư
+          </button>
+        </div>
+
+        <div style="background: #fff; border: 1px solid var(--border-soft); border-radius: 16px; padding: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="font-size: 15px; color: var(--rose-hover);">💌 Chi tiết lịch sử phản hồi</h3>
+            <button type="button" class="btn-text-skip" id="btn-refresh-inbox">Làm mới</button>
+          </div>
+          <div id="inbox-list" style="font-size: 13px; color: var(--text-main);">
+            Đang tải dữ liệu...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /********************************************************************
+     * 1. KHỞI TẠO ÂM THANH CHẠY NGẦM (HOÀN TOÀN ẨN KHỎI GIAO DIỆN)
+     ********************************************************************/
+    const B64_INITIAL_AUDIO = "";
+    const B64_AGREE_AUDIO = "";
+
+    const audioInitial = document.getElementById('audio-initial');
+    const audioAgree = document.getElementById('audio-agree');
+
+    function base64ToBlobUrl(b64, mimeType) {
+      if (!b64 || b64.startsWith('__')) return null;
+      try {
+        const byteCharacters = atob(b64);
+        const byteArrays = [];
+        const sliceSize = 16384;
+        for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+          const slice = byteCharacters.slice(offset, offset + sliceSize);
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+          byteArrays.push(new Uint8Array(byteNumbers));
+        }
+        const blob = new Blob(byteArrays, { type: mimeType });
+        return URL.createObjectURL(blob);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    const initialBlobUrl = base64ToBlobUrl(B64_INITIAL_AUDIO, 'audio/mp4');
+    if (initialBlobUrl) audioInitial.src = initialBlobUrl;
+
+    const agreeBlobUrl = base64ToBlobUrl(B64_AGREE_AUDIO, 'audio/mp4');
+    if (agreeBlobUrl) audioAgree.src = agreeBlobUrl;
+
+    audioInitial.volume = 0.65;
+    audioAgree.volume = 0.70;
+
+    function playInitialMusicSilently() {
+      audioAgree.pause();
+      audioInitial.play().catch(() => {});
+    }
+
+    function switchToAgreeMusicSilently() {
+      audioInitial.pause();
+      audioInitial.currentTime = 0;
+      audioAgree.currentTime = 0;
+      audioAgree.play().catch(() => {});
+    }
+
+    /********************************************************************
+     * 2. HIỆU ỨNG CHỮ GÕ LẦN LƯỢT (TYPEWRITER EFFECT) Ở PHẦN 1
+     ********************************************************************/
+    const apologyParagraphs = [
+      "Gửi tặng Minh — Cảm ơn bạn vì đã mở trang web nhỏ này và dành cho tui vài phút lắng nghe.",
+      "Những ngày qua, khi có khoảng lặng để nhìn lại mọi chuyện, tui đã suy nghĩ rất nhiều về những sai lầm mà bản thân đã mắc phải. Tui nhận ra chính sự vô tâm, những lúc nóng nảy và thiếu tinh tế của mình đã làm bạn phải buồn lòng và chịu nhiều tổn thương.",
+      "Tui viết những dòng này không phải để biện minh hay đổ lỗi cho hoàn cảnh, càng không phải để trách cứ bất kỳ điều gì ở bạn. Mọi thiếu sót đều xuất phát từ sự chưa trưởng thành của chính tui.",
+      "Tui thực sự hối tiếc vì đã làm người mình trân trọng phải buồn. Tui không dám yêu cầu bạn phải tha thứ cho tui ngay lập tức, chỉ mong bạn biết rằng lời xin lỗi này đến từ sự nhìn nhận chân thành nhất trong lòng tui."
+    ];
+
+    const typewriterContainer = document.getElementById('typewriter-text');
+    let isTypingCancelled = false;
+
+    async function runTypewriterEffect() {
+      typewriterContainer.innerHTML = '';
+      const cursor = document.createElement('span');
+      cursor.className = 'type-cursor';
+
+      for (let pIndex = 0; pIndex < apologyParagraphs.length; pIndex++) {
+        if (isTypingCancelled) break;
+        const pElem = document.createElement('p');
+        pElem.className = 'letter-paragraph';
+        typewriterContainer.appendChild(pElem);
+
+        const text = apologyParagraphs[pIndex];
+        for (let cIndex = 0; cIndex < text.length; cIndex++) {
+          if (isTypingCancelled) break;
+          pElem.textContent = text.slice(0, cIndex + 1);
+          pElem.appendChild(cursor);
+          await new Promise(r => setTimeout(r, 24));
+        }
+        await new Promise(r => setTimeout(r, 320));
+      }
+    }
+
+    function showFullLetterImmediately() {
+      isTypingCancelled = true;
+      typewriterContainer.innerHTML = apologyParagraphs
+        .map(p => `<p class="letter-paragraph">${p}</p>`)
+        .join('');
+      document.getElementById('btn-skip-typewriter').style.display = 'none';
+    }
+
+    document.getElementById('btn-skip-typewriter').addEventListener('click', showFullLetterImmediately);
+
+    document.getElementById('btn-open-letter').addEventListener('click', () => {
+      document.getElementById('welcome-overlay').classList.add('hidden');
+      playInitialMusicSilently();
+      runTypewriterEffect();
+    });
+
+    /********************************************************************
+     * 3. CHUYỂN CẢNH MƯỢT MÀ & GHI NHẬN TRẠNG THÁI ĐỒNG Ý / TỪ CHỐI
+     ********************************************************************/
+    function navigateToSection(targetId) {
+      const currentActive = document.querySelector('.page-section.active');
+      const targetSection = document.getElementById(targetId);
+      if (!targetSection || currentActive === targetSection) return;
+
+      if (currentActive) {
+        currentActive.classList.remove('visible');
+        setTimeout(() => {
+          currentActive.classList.remove('active');
+          targetSection.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              targetSection.classList.add('visible');
+            });
+          });
+        }, 420);
+      }
+    }
+
+    document.getElementById('btn-to-part2').addEventListener('click', () => {
+      showFullLetterImmediately();
+      navigateToSection('section-2');
+    });
+
+    const btnAgree = document.getElementById('btn-agree');
+    const btnDecline = document.getElementById('btn-decline');
+
+    // Khi Minh bấm nút ĐỒNG Ý ở Phần 2: chuyển nhạc, mở biểu mẫu và ghi nhận bước bấm Đồng ý
+    btnAgree.addEventListener('click', () => {
+      switchToAgreeMusicSilently();
+      navigateToSection('section-3a');
+      const agreeClickPayload = {
+        id: 'resp_' + Date.now(),
+        type: 'agree_click',
+        isDeclined: false,
+        decision: 'ĐỒNG Ý (Đã bấm nút ĐỒNG Ý ❤️ ở Phần 2)',
+        note: 'Minh đã bấm chọn nút ĐỒNG Ý ❤️ và đang ở màn hình điền mong muốn / lịch hẹn.',
+        submittedAt: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+      };
+      syncPayloadToStorageAndCloud(agreeClickPayload);
+    });
+
+    // Khi Minh bấm nút KHÔNG ở Phần 2: tôn trọng quyết định và ghi nhận rõ trạng thái TỪ CHỐI vào hộp thư
+    btnDecline.addEventListener('click', () => {
+      navigateToSection('section-3b');
+      const declinePayload = {
+        id: 'resp_' + Date.now(),
+        type: 'decline',
+        isDeclined: true,
+        decision: 'TỪ CHỐI (Đã bấm nút KHÔNG)',
+        note: 'Minh đã chọn nút KHÔNG ở Phần 2 và chuyển sang trang nhận lời chúc bình an.',
+        thingsToChange: '(Người nhận đã chọn KHÔNG)',
+        relationshipDesires: '-',
+        issuesToSolve: '-',
+        neverRepeat: '-',
+        otherWishes: '-',
+        meetDate: '-',
+        meetTime: '-',
+        meetLocation: '-',
+        submittedAt: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+      };
+      syncPayloadToStorageAndCloud(declinePayload);
+    });
+
+    /********************************************************************
+     * 4. RÀNG BUỘC NGÀY HẸN (KHÔNG CHO CHỌN NGÀY TRONG QUÁ KHỨ)
+     ********************************************************************/
+    const dateInput = document.getElementById('f-date');
+    function setMinDateToday() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const todayStr = `${yyyy}-${mm}-${dd}`;
+      dateInput.min = todayStr;
+      if (!dateInput.value) {
+        dateInput.value = todayStr;
+      }
+    }
+    setMinDateToday();
+
+    /********************************************************************
+     * 5. KIỂM TRA BIỂU MẪU, XÁC NHẬN & LƯU DỮ LIỆU THỰC TẾ LÊN CLOUD
+     ********************************************************************/
+    const DEFAULT_CLOUD_ENDPOINT = 'https://kvdb.io/A6Xy9zW8pL2mK4nQ7rT1vB/reconnect_responses_2026';
+    function getCloudEndpoint() {
+      return localStorage.getItem('custom_cloud_endpoint') || DEFAULT_CLOUD_ENDPOINT;
+    }
+
+    async function syncPayloadToStorageAndCloud(payload) {
+      const localList = JSON.parse(localStorage.getItem('saved_reconcile_replies') || '[]');
+      localList.unshift(payload);
+      localStorage.setItem('saved_reconcile_replies', JSON.stringify(localList));
+
+      const endpoint = getCloudEndpoint();
+      try {
+        if (endpoint.includes('firebaseio.com') || endpoint.includes('firebasedatabase.app')) {
+          await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          let remoteList = [];
+          try {
+            const getRes = await fetch(endpoint);
+            if (getRes.ok) {
+              const parsed = await getRes.json();
+              if (Array.isArray(parsed)) remoteList = parsed;
+            }
+          } catch (_) {}
+          remoteList.unshift(payload);
+          await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(remoteList)
+          });
+        }
+      } catch (err) {
+        console.warn('Cloud sync warning:', err);
+      }
+    }
+
+    let pendingPayload = null;
+    const reconnectForm = document.getElementById('reconnect-form');
+    const errorBanner = document.getElementById('form-error-banner');
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmSummaryContent = document.getElementById('confirm-summary-content');
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    reconnectForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorBanner.style.display = 'none';
+
+      const thingsToChange = document.getElementById('f-change').value.trim();
+      const relationshipDesires = document.getElementById('f-desire').value.trim();
+      const issuesToSolve = document.getElementById('f-issues').value.trim();
+      const neverRepeat = document.getElementById('f-never-repeat').value.trim();
+      const otherWishes = document.getElementById('f-other-wishes').value.trim();
+      const meetDate = document.getElementById('f-date').value;
+      const meetTime = document.getElementById('f-time').value;
+      const meetLocation = document.getElementById('f-location').value.trim();
+
+      if (!thingsToChange || !relationshipDesires || !meetDate || !meetTime || !meetLocation) {
+        errorBanner.textContent = 'Bạn vui lòng điền đầy đủ các mục có dấu (*) để tui hiểu rõ mong muốn của bạn nhé.';
+        errorBanner.style.display = 'block';
+        return;
+      }
+
+      if (meetDate < dateInput.min) {
+        errorBanner.textContent = 'Ngày gặp mặt không thể là một ngày trong quá khứ. Bạn chọn lại ngày giúp tui nhé.';
+        errorBanner.style.display = 'block';
+        return;
+      }
+
+      pendingPayload = {
+        id: 'resp_' + Date.now(),
+        type: 'agree_full',
+        isDeclined: false,
+        decision: 'ĐỒNG Ý ❤️ (Đã gửi lời nhắn & lịch hẹn)',
+        thingsToChange,
+        relationshipDesires,
+        issuesToSolve: issuesToSolve || '(Không ghi thêm)',
+        neverRepeat: neverRepeat || '(Không ghi thêm)',
+        otherWishes: otherWishes || '(Không ghi thêm)',
+        meetDate,
+        meetTime,
+        meetLocation,
+        submittedAt: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+      };
+
+      confirmSummaryContent.innerHTML = `
+        <p><strong>• Điều bạn muốn tui thay đổi:</strong> ${escapeHtml(pendingPayload.thingsToChange)}</p>
+        <p><strong>• Mong muốn trong mối quan hệ:</strong> ${escapeHtml(pendingPayload.relationshipDesires)}</p>
+        <p><strong>• Vấn đề bạn và tui cần giải quyết:</strong> ${escapeHtml(pendingPayload.issuesToSolve)}</p>
+        <p><strong>• Điều bạn không muốn lặp lại:</strong> ${escapeHtml(pendingPayload.neverRepeat)}</p>
+        <p><strong>• Mong muốn khác của bạn:</strong> ${escapeHtml(pendingPayload.otherWishes)}</p>
+        <hr style="border: none; border-top: 1px dashed #e3c2c8; margin: 10px 0;" />
+        <p><strong>• Thời gian hẹn gặp:</strong> ${escapeHtml(pendingPayload.meetTime)} ngày ${escapeHtml(pendingPayload.meetDate)}</p>
+        <p><strong>• Địa điểm / Ghi chú:</strong> ${escapeHtml(pendingPayload.meetLocation)}</p>
+      `;
+
+      confirmModal.classList.add('open');
+    });
+
+    document.getElementById('btn-cancel-send').addEventListener('click', () => {
+      confirmModal.classList.remove('open');
+    });
+
+    document.getElementById('btn-confirm-send').addEventListener('click', async () => {
+      if (!pendingPayload) return;
+      const btnConfirm = document.getElementById('btn-confirm-send');
+      const originalText = btnConfirm.textContent;
+      btnConfirm.disabled = true;
+      btnConfirm.textContent = 'Đang gửi cho tui...';
+
+      await syncPayloadToStorageAndCloud(pendingPayload);
+
+      btnConfirm.disabled = false;
+      btnConfirm.textContent = originalText;
+      confirmModal.classList.remove('open');
+      navigateToSection('section-success');
+    });
+
+    /********************************************************************
+     * 6. HỘP THƯ CỦA TUI (BẢO MẬT MẬT KHẨU & BÁO CÁO TỪ CHỐI / ĐỒNG Ý)
+     ********************************************************************/
+    const adminModal = document.getElementById('admin-modal');
+    const adminErrorMsg = document.getElementById('admin-error-msg');
+    const adminPinInput = document.getElementById('admin-pin-input');
+
+    document.getElementById('btn-open-admin').addEventListener('click', () => {
+      adminErrorMsg.style.display = 'none';
+      adminPinInput.value = '';
+      adminModal.classList.add('open');
+    });
+
+    document.getElementById('btn-close-admin').addEventListener('click', () => {
+      adminModal.classList.remove('open');
+    });
+
+    // Kiểm tra mã khóa đã mã hóa Base64 để không lộ trực tiếp trên giao diện
+    function verifySecretPin() {
+      const pin = adminPinInput.value.trim();
+      const encoded = btoa(unescape(encodeURIComponent(pin)));
+      if (encoded === 'MjAyNg==' || encoded === 'MTUxMA==') {
+        adminErrorMsg.style.display = 'none';
+        document.getElementById('admin-login-view').style.display = 'none';
+        document.getElementById('admin-dashboard-view').style.display = 'block';
+        document.getElementById('cloud-endpoint-input').value = localStorage.getItem('custom_cloud_endpoint') || '';
+        loadInboxResponses();
+      } else {
+        adminErrorMsg.style.display = 'block';
+      }
+    }
+
+    document.getElementById('btn-verify-pin').addEventListener('click', verifySecretPin);
+    adminPinInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        verifySecretPin();
+      }
+    });
+
+    document.getElementById('btn-save-endpoint').addEventListener('click', () => {
+      const val = document.getElementById('cloud-endpoint-input').value.trim();
+      if (val) {
+        localStorage.setItem('custom_cloud_endpoint', val);
+      } else {
+        localStorage.removeItem('custom_cloud_endpoint');
+      }
+      loadInboxResponses();
+    });
+
+    document.getElementById('btn-refresh-inbox').addEventListener('click', loadInboxResponses);
+
+    function isItemDeclined(item) {
+      if (!item) return false;
+      if (item.type === 'decline' || item.isDeclined === true) return true;
+      const dec = String(item.decision || '').toUpperCase();
+      return dec.includes('TỪ CHỐI') || dec.includes('KHÔNG');
+    }
+
+    async function loadInboxResponses() {
+      const inboxList = document.getElementById('inbox-list');
+      const summaryCard = document.getElementById('decision-summary-card');
+      const headlineEl = document.getElementById('decision-latest-headline');
+      const subEl = document.getElementById('decision-latest-sub');
+      const statTotalEl = document.getElementById('stat-total-count');
+      const statAgreeEl = document.getElementById('stat-agree-count');
+      const statDeclineEl = document.getElementById('stat-decline-count');
+
+      inboxList.innerHTML = 'Đang đồng bộ dữ liệu từ Cloud...';
+      const endpoint = getCloudEndpoint();
+      let combined = [];
+
+      try {
+        const res = await fetch(endpoint);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            combined = data;
+          } else if (data && typeof data === 'object') {
+            combined = Object.values(data).reverse();
+          }
+        }
+      } catch (_) {}
+
+      const localData = JSON.parse(localStorage.getItem('saved_reconcile_replies') || '[]');
+      const seenIds = new Set(combined.map(item => item.id));
+      localData.forEach(item => {
+        if (!seenIds.has(item.id)) combined.push(item);
+      });
+
+      // Tính toán thống kê Đồng ý vs Từ chối
+      const totalCount = combined.length;
+      const declineCount = combined.filter(item => isItemDeclined(item)).length;
+      const agreeCount = totalCount - declineCount;
+
+      statTotalEl.textContent = String(totalCount);
+      statAgreeEl.textContent = String(agreeCount);
+      statDeclineEl.textContent = String(declineCount);
+
+      summaryCard.classList.remove('status-declined', 'status-agreed', 'status-pending');
+
+      if (totalCount === 0) {
+        summaryCard.classList.add('status-pending');
+        headlineEl.textContent = '⏳ Chưa có phản hồi (Minh chưa chọn ĐỒNG Ý hay KHÔNG)';
+        subEl.textContent = 'Khi Minh bấm vào nút ĐỒNG Ý hoặc KHÔNG ở Phần 2, kết quả sẽ hiển thị ngay tại đây.';
+        inboxList.innerHTML = '<p style="color: var(--text-muted);">Chưa có phản hồi nào được ghi nhận.</p>';
+        return;
+      }
+
+      // Kiểm tra phản hồi mới nhất của Minh
+      const latest = combined[0];
+      if (isItemDeclined(latest)) {
+        summaryCard.classList.add('status-declined');
+        headlineEl.textContent = '💔 Kết quả mới nhất: Cô ấy đã TỪ CHỐI (Bấm nút KHÔNG)';
+        subEl.textContent = `Ghi nhận lúc: ${latest.submittedAt || 'Vừa xong'} — Minh đã chọn KHÔNG ở Phần 2 và chuyển sang màn hình lời chúc bình an.`;
+      } else if (latest.type === 'agree_click') {
+        summaryCard.classList.add('status-agreed');
+        headlineEl.textContent = '💗 Kết quả mới nhất: Cô ấy KHÔNG từ chối (Đã bấm ĐỒNG Ý ❤️)';
+        subEl.textContent = `Ghi nhận lúc: ${latest.submittedAt || 'Vừa xong'} — Minh đã bấm nút ĐỒNG Ý ở Phần 2 (đang xem biểu mẫu hẹn gặp).`;
+      } else {
+        summaryCard.classList.add('status-agreed');
+        headlineEl.textContent = '❤️ Kết quả mới nhất: Cô ấy đã ĐỒNG Ý & Gửi lời nhắn hẹn gặp!';
+        subEl.textContent = `Ghi nhận lúc: ${latest.submittedAt || 'Vừa xong'} — Minh đã điền biểu mẫu và chọn ngày gặp mặt.`;
+      }
+
+      inboxList.innerHTML = combined.map(item => {
+        const declined = isItemDeclined(item);
+        if (declined) {
+          return `
+            <div style="border: 1.5px solid #E295A1; border-radius: 12px; padding: 14px; margin-bottom: 10px; background: #FFF5F6;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;">
+                <span class="reply-badge badge-decline">💔 ĐÃ TỪ CHỐI (Chọn nút KHÔNG)</span>
+                <span style="font-size: 12px; color: var(--text-muted);">🕒 ${escapeHtml(item.submittedAt)}</span>
+              </div>
+              <p style="color: #6E3B42; font-size: 13.5px;">
+                <strong>Trạng thái:</strong> Minh đã bấm nút <strong>KHÔNG</strong> ở Phần 2 và đọc trang lời chúc bình an (Phần 3B).
+              </p>
+            </div>
+          `;
+        }
+
+        if (item.type === 'agree_click') {
+          return `
+            <div style="border: 1px solid var(--border-soft); border-radius: 12px; padding: 14px; margin-bottom: 10px; background: #FFF9FB;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;">
+                <span class="reply-badge badge-agree-click">💗 ĐÃ BẤM NÚT ĐỒNG Ý ❤️ (Bước 2)</span>
+                <span style="font-size: 12px; color: var(--text-muted);">🕒 ${escapeHtml(item.submittedAt)}</span>
+              </div>
+              <p style="color: var(--text-main); font-size: 13.5px;">
+                <strong>Trạng thái:</strong> Minh không từ chối — cô ấy đã bấm chọn nút <strong>ĐỒNG Ý ❤️</strong> để mở biểu mẫu ở Phần 3A.
+              </p>
+            </div>
+          `;
+        }
+
+        return `
+          <div style="border: 1.5px solid #8FD1A8; border-radius: 12px; padding: 14px; margin-bottom: 10px; background: #F4FBF7;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; margin-bottom: 8px;">
+              <span class="reply-badge badge-agree">❤️ ĐÃ ĐỒNG Ý & GỬI BIỂU MẪU HẸN GẶP</span>
+              <span style="font-size: 12px; color: var(--text-muted);">🕒 ${escapeHtml(item.submittedAt)}</span>
+            </div>
+            <p><strong>• Muốn tui thay đổi:</strong> ${escapeHtml(item.thingsToChange)}</p>
+            <p><strong>• Mong muốn trong MQH:</strong> ${escapeHtml(item.relationshipDesires)}</p>
+            <p><strong>• Vấn đề cần giải quyết:</strong> ${escapeHtml(item.issuesToSolve)}</p>
+            <p><strong>• Không muốn lặp lại:</strong> ${escapeHtml(item.neverRepeat)}</p>
+            <p><strong>• Mong muốn khác:</strong> ${escapeHtml(item.otherWishes)}</p>
+            <hr style="border: none; border-top: 1px dashed #B5DFC5; margin: 8px 0;" />
+            <p><strong>📅 Lịch hẹn gặp:</strong> ${escapeHtml(item.meetTime)} ngày ${escapeHtml(item.meetDate)} — tại: ${escapeHtml(item.meetLocation)}</p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /********************************************************************
+     * 7. HIỆU ỨNG CÁNH HOA RƠI NHẸ NHÀNG TRÊN CANVAS
+     ********************************************************************/
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class PetalParticle {
+      constructor() {
+        this.reset(true);
+      }
+      reset(initial = false) {
+        this.x = Math.random() * canvas.width;
+        this.y = initial ? Math.random() * canvas.height : -20;
+        this.size = 4 + Math.random() * 6;
+        this.speedY = 0.35 + Math.random() * 0.65;
+        this.speedX = -0.3 + Math.random() * 0.6;
+        this.angle = Math.random() * Math.PI * 2;
+        this.spin = (Math.random() - 0.5) * 0.015;
+        this.opacity = 0.25 + Math.random() * 0.4;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX + Math.sin(this.angle) * 0.25;
+        this.angle += this.spin;
+        if (this.y > canvas.height + 20) this.reset(false);
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.fillStyle = `rgba(217, 107, 123, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 28; i++) {
+      particles.push(new PetalParticle());
+    }
+
+    function animateAmbient() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateAmbient);
+    }
+    animateAmbient();
+  </script>
+</body>
+</html>
